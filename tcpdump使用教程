@@ -1,0 +1,34 @@
+# 示例一
+# 过滤ip协议（proto）----目的（dir）----ip（type-host）----为192.168.220.128（value）的数据包
+tcpdump ip dst host 192.168.220.128
+# 当然我们前边用了中括号，意味着在没有歧义情下况某些字段是可以省略的，如这里proto字段可省略，等价于
+# tcpdump dst host 192.168.220.128
+
+# 示例二
+# 过滤ip协议（proto）----目的（dir）----网段（type-net）----为192.168.220（value）的数据包
+tcpdump ip dst net 192.168.220
+
+# 示例三
+# 过滤tcp协议（proto）----目的（dir）----端口（type-port）----为3306（value）的数据包
+tcpdump tcp dst port 3306
+# port支持/etc/services可解析的服务，3306对应mysql，所以等价于
+# tcpdump tcp dst port mysql
+
+# 示例四
+# 过滤tcp协议（proto）----目的（dir）----端口范围（type-portrange）----为3306-3308（value）的数据包
+tcpdump tcp dst portrange 3306-3308
+
+
+
+
+
+
+
+# 过滤ip协议（proto）----目的（dir）----ip（type-host）----为192.168.220.128（value）且
+# tcp协议（proto）----目的（dir）----端口（type-port）----为3306（value）的数据包
+tcpdump ip dst host 192.168.220.128 and tcp dst port 3306
+
+# 过滤tcp协议（proto）----目的（dir）----端口（type-port）----为3306或3308（value）的数据包
+tcpdump tcp dst port 3306 or tcp dst port 3308
+# 另外也支持以下单引号写法
+# tcpdump tcp dst port '(3306 or 3308)'
