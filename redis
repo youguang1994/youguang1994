@@ -1,0 +1,37 @@
+1.查找所有key: keys *
+
+2.模糊匹配查找对应key: keys user* (表示查找前缀为user的所有key,*为通配符，表示替代任意数量的所有字符)
+
+3.给redis中key为user的value赋予值jony,可作为新增和更新：set user jony (表示设置一个key为user,value为jony的数据)
+
+4.通过key获得value的值: get user (user表示key)
+
+5.设置key过期时间：expire user 100 (user表示key，100表示这个key的过期时间)
+
+6.查看redis的key还有多久过期：ttl user ( user表示key，当 key 存在但没有设置剩余生存时间时，返回 -1 。 否则，以秒为单位，返回 key 的剩余生存时间)
+
+7.查看当前redis中存在多少个key: dbsize
+
+8.表示切换redis的database索引: select 1(1表示切换到database为1的redis,默认进入redis时，redis的database为0)
+
+9.重命名某个key: keyrename user user1 (user表示旧key,user1表示新key)
+
+10.确认某个key是否存在：exists user （user表示key） 
+
+11.删除某个key: del user (user表示key)
+
+12.给value为数字的key做加法：incrby num 10 (num表示key,10表示把num对应的value加10)
+
+13.给value为数字的key做减法：decrby num 10 (num表示key,10表示把num对应的value减10)
+
+14.给value的末尾增加一串字符串：append user jony (表示把user这个key对应的value末尾拼接一个字符串jony)
+
+15.在名称为key的list头添加一个值为value的元素: lpush key value (使用redis作为list消息队列时使用)
+
+16.在名称为key的list尾添加一个值为value的元素: rpush key value(使用redis作为list消息队列时使用)
+
+17.返回并删除名称为key的list中的首元素: lpop key(使用redis作为list消息队列时使用)
+
+18.返回并删除名称为key的list中的尾元素:rpop key(使用redis作为list消息队列时使用)
+
+19.给名称为key的list中index位置的元素赋value值:lset key index value(使用redis作为list消息队列时使用)
