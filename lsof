@@ -1,0 +1,35 @@
+1. 1. 是什么
+lsof 命令常用于查找进程打开了哪些文件以及与打开文件相关联的内容
+
+2. 2. 怎么用
+-p pid : 输出指定进
+
+-l : 输出中使用ID代替用户名；
+
+-u userName : 输出指定用户打开的文件；
+
+-c string : 输出 COMMAND 列中包含 string 的项；
+
+-d fd : 输出包含指定描述符的项；
+
+fileName : 输出打开文件 fileName 的所有项；
+
+
+
+
+
+执行命令 lsof -p 1，列出 1号 进程打开的文件
+
+执行命令 lsof -l ，输出中使用用户 ID 代替用户名
+
+执行命令 lsof -u root，输出 root 用户打开的文件
+
+执行命令 lsof -c sshd，输出 COMMAND 列包含 sshd 的项，
+
+执行命令 lsof -d 12，输出打开文件描述符 12 的所有项，
+
+执行命令 lsof /usr/lib64/ld-2.17.so，查看打开文件/usr/lib64/ld-2.17.so的进程项
+
+执行命令 lsof -i 4，输出 TYPE 为 IPv4 的所有项
+
+执行命令 lsof -i UDP 输出协议类型为 UDP 的所有项
