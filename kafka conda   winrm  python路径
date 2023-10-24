@@ -1,0 +1,134 @@
+kafka
+查看topic       
+bin/kafka-topics.sh --zookeeper localhost:2181 --list 
+    
+创建topic       
+bin/kafka-topics.sh --zookeeper localhost:2181 --create --replication-factor 3 --partitions 1 --topic first
+
+删除topic       
+./kafka-topics.sh --zookeeper localhost:2181 --delete --topic fist
+
+发送消息        
+bin/kafka-console-producer.sh --broker-list hadoop002:9092 --topic first
+
+创建消费者组以及消费者来消费消息        
+bin/kafka-console-consumer.sh  --zookeeper hadoop002:2181 --from-beginning --topic first --group  groupname   --version  0.9                 
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning   --version   2.1.1
+
+查看某个Topic的详情  
+bin/kafka-topics.sh --zookeeper localhost:2181  --describe --topic first  
+
+查看存在的所有消费者组  
+./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+
+查询某个消费者组的消费情况 
+./kafka-consumer-groups.sh  --bootstrap-server localhost:9092 --describe --group mock_agent_rcv_msg_consumer_2
+
+动态增加topic的分区  
+./kafka-topics.sh --zookeeper localhost:2181 --alter --topic change_stream_event_asset --partitions 10
+
+查询某个log的内容：bin/kafka-run-class.sh kafka.tools.DumpLogSegments --files /tmp/kafka-logs/test3-0/00000000000000000000.log  --print-data-log
+
+查询
+
+
+如何删除kafak中某个topic中的消息；
+step1: 在server.properties  中修改 delete.topic.enable=True
+step2: 重启topic所在的broker
+以上两部可以./bin/kafka-server-start.sh config / server.properties --override broker.id = 100
+一次完成，其中override就是要改的参数
+step3: 删除topic   ./kafka-topics.sh — zookeeper zookeeper_host:2181 -- delete -- topic <topic_name
+
+
+change_stream_event_detect
+change_stream_event_asset
+change_stream_event_baseline
+change_stream_event_vul
+change_stream_event_job
+
+
+
+
+./kafka-server-start.sh ../config/server.properties
+
+
+./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group change_stream --describe --command-config /usr/local/qingteng/kafka/config/consumer.properties |grep change_stream 
+
+
+
+# 查看整体磁盘占用
+df -h
+# 查看kafka哪些topic占用大
+du -sh /data/kafka-data/* | sort -rh | head -n10
+ 
+# 查看topic默认配置的保存时间
+/usr/local/qingteng/kafka/bin/kafka-configs.sh --bootstrap-server 127.0.0.1:9092 --command-config /usr/local/qingteng/kafka/config/consumer.properties --describe --entity-type topics --entity-name bigdata_event 
+ 
+# 调整时间, 保存12小时
+/usr/local/qingteng/kafka/bin/kafka-configs.sh --bootstrap-server 127.0.0.1:9092 --command-config /usr/local/qingteng/kafka/config/consumer.properties  --alter --entity-type topics --entity-name bigdata_event --add-config retention.ms=43200000
+ 
+# 查看消费情况
+/usr/local/qingteng/kafka/bin/kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092   --command-config  /usr/local/qingteng/kafka/config/consumer.properties --describe --group logstash_bigdata_event
+ 
+# 查看指定topic消费情况
+/usr/local/qingteng/kafka/bin/kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092   --command-config  /usr/local/qingteng/kafka/config/consumer.properties --describe --all-groups | grep tc_radar_event
+
+
+
+
+
+
+pythonkafka conda   winrm  python路径
+os.path.abspath 取文件绝对路径
+os.path.join()函数：连接两个或更多的路径名组件
+    1.如果各组件名首字母不包含’/’，则函数会自动加上
+　　2.如果有一个组件是一个绝对路径，则在它之前的所有组件均会被舍弃
+　　3.如果最后一个组件为空，则生成的路径以一个’/’分隔符结尾
+os.listdir()用于返回一个由文件名和目录名组成的列表，需要注意的是它接收的参数需要是一个绝对的路径
+os.path.isdir()用于判断对象是否为一个目录
+os.path.isfile()用于判断对象是否为一个文件
+os.getenv("HOME") HOME是系统的环境变量
+json.dumps()和json.loads()是json格式处理函数（可以这么理解，json是字符串）
+　 (1)json.dumps()函数是将一个Python数据类型列表进行json格式的编码（可以这么理解，json.dumps()函数是将字典转化为字符串）
+　 (2)json.loads()函数是将json格式数据转换为字典（可以这么理解，json.loads()函数是将字符串转化为字典）
+os.environ.get（）是python中os模块获取环境变量的一个方法
+
+
+winrm基本使用：https://blog.csdn.net/weixin_33825683/article/details/92506117
+    使用session方法
+    ###
+    import winrm
+    s=winrm.Session('http://10.10.60.14:5985/wsman',auth=('administrator','password'))
+    r=s.run_ps('dir')
+    r=s.run_cmd('cd /d d: & test.bat') 
+    print r.std_out 
+    print  r.std_err
+    使用Protocol方法
+    ###
+    import winrm
+    conn = winrm.Protocol(endpoint='http://10.10.60.14:5985/wsman', transport='plaintext', username='administrator', password='password')
+    shell_id=conn.open_shell()
+    com=conn.run_command(shell_id,"dir") 
+    stdout, stderr, return_code = conn.get_command_output(shell_id, com) 
+    print "STDOUT: %s" % (stdout)
+    print "STDERR: %s" % (stderr)
+    
+    
+
+conda create --name py35 python=3.5
+conda remove --name py35 --all
+
+activate py35     激活环境 /  切换环境
+deactivate py35    退出当前环境，返回主环境
+
+conda info -e    查看系统中的所有环境
+conda install numpy   安装库
+conda list   查看已经安装的库
+conda list -n py35    查看某个环境的已安装包
+conda search numpy      搜索package的信息
+conda install -n py35 numpy     安装package到指定的环境
+conda update -n py35 numpy      更新package
+conda remove -n py35 numpy      删除package
+conda update anaconda      更新anaconda
+conda update python       更新python
+
