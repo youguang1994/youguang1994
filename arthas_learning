@@ -1,0 +1,181 @@
+https://blog.csdn.net/lydms/article/details/125238249
+是什么？
+
+Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。
+当你遇到以下类似问题而束手无策时， Arthas 可以帮助你解决：
+
+    这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？
+    我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？
+    遇到问题无法在线上 debug，难道只能通过加日志再重新发布吗？
+    线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！
+    是否有一个全局视角来查看系统的运行状况？
+    有什么办法可以监控到JVM的实时运行状态？
+    怎么快速定位应用的热点，生成火焰图？
+
+
+怎么用？
+
+
+
+
+核心监视功能
+1、monitor：监控方法的执行情况
+
+监控指定类中方法的执行情况
+用来监视一个时间段中指定方法的执行次数，成功次数，失败次数，耗时等这些信息
+
+-c   统计周期  默认值为120秒
+
+监控demo.MathGame类，并且每5S更新一次状态:     
+
+monitor demo.MathGame primeFactors -c  5
+
+
+2、watch：检测函数返回值
+
+方法执行数据观测，让你能方便的观察到指定方法的调用情况。
+
+能观察到的范围为：返回值、抛出异常、入参，通过编写OGNL 表达式进行对应变量的查看。
+
+ 查看方法执行的返回值
+
+
+watch demo.MathGame primeFactors returnObj
+
+
+#    观察demo.MathGame类中primeFactors方法出参和返回值，结果属性遍历深度为2。
+#    params：表示所有参数数组(因为不确定是几个参数)。
+#    returnObject：表示返回值
+
+
+watch demo.MathGame primeFactors "{params,returnObj}" -x  2
+
+
+查看执行前参数
+
+# -b 方法执行前的参数
+
+
+watch demo.MathGame primeFactors "{params,returnObj}" -x 2 -b
+
+查看方法中的属性
+watch demo.MathGame primeFactors "{target}" -x 2 -b
+
+
+查看某一属性的值
+
+watch demo.MathGame primeFactors "{target.illegalArgumentCount}" -x 2 -b
+
+检测方法在执行前-b、执行后-s的入参params、属性target和返回值returnObj
+
+
+观察输入参数小于0的情况
+
+
+
+2. trace：根据路径追踪，并记录消耗时间
+
+对方法内部调用路径进行追踪，并输出方法路径上的每个节点上耗时。
+
+#    trace函数指定类的指定方法
+trace demo.MathGame run
+
+#    执行1次后退出
+trace demo.MathGame run -n 1
+
+#    默认情况下，trace不会包含jdk里的函数调用，如果希望trace jdk里的函数。
+#    需要显式设置--skipJDKMethod false。
+trace --skipJDKMethod false demo.MathGame run
+
+
+#    据调用耗时过滤，trace大于0.5ms的调用路径
+trace demo.MathGame run '#cost > .5'
+
+#    可以用正则表匹配路径上的多个类和函数，一定程度上达到多层trace的效果。
+trace -E com.test.ClassA|org.test.ClassB method1|method2|method3
+
+
+3、stack：输出当前方法被调用的调用路径
+
+很多时候我们都知道一个方法被执行，但这个方法被执行的路径非常多，或者你根本就不知道这个方法是从那里被执行了，此时你需要的是 stack 命令。
+
+#    获取primeFactors的调用路径
+stack demo.MathGame primeFactors
+
+#    条件表达式来过滤，第0个参数的值小于0，-n表示获取2次
+stack demo.MathGame primeFactors 'params[0]<0' -n 2
+
+
+#    据执行时间来过滤，耗时大于0.5毫秒
+stack demo.MathGame primeFactors '#cost>0.5'
+
+4、tt：时间隧道，记录多个请求
+
+time-tunnel 时间隧道。
+
+记录下指定方法每次调用的入参和返回信息，并能对这些不同时间下调用的信息进行观测
+
+-t            t 命令有很多个主参数，-t 就是其中之一。这个参数表明希望记录下类 *Test 的 print 方法的每次执行情况。
+
+-n 3        当你执行一个调用量不高的方法时可能你还能有足够的时间用 CTRL+C 中断 tt 命令记录的过程，但如果遇到调用量非常大的方法，瞬间就能将你的 JVM 内存撑爆。
+
+           此时你可以通过 -n 参数指定你需要记录的次数，当达到记录次数时 Arthas 会主动中断tt命令的记录过程，避免人工操作无法停止的情况。
+
+#    最基本的使用来说，就是记录下当前方法的每次调用环境现场。
+tt -t demo.MathGame primeFactors
+
+
+
+#    对现有记录进行检索
+tt -l
+
+
+#    需要筛选出 `primeFactors` 方法的调用信息
+tt -s 'method.name=="primeFactors"'
+
+#    查看某条记录详细信息
+tt -i 1002
+
+
+tt对重载的支持
+
+不知道大家是否有在使用过程中遇到以下困惑
+
+Arthas 似乎很难区分出重载的方法
+我只需要观察特定参数，但是 tt 却全部都给我记录了下来
+
+
+tt发起重新请求
+
+tt 命令由于保存了当时调用的所有现场信息，所以我们可以自己主动对一个 INDEX 编号的时间片自主发起一次调用，从而解放你的沟通成本。此时你需要 -p 参数。通过 --replay-times 指定 调用次数，通过 --replay-interval 指定多次调用间隔(单位ms, 默认1000ms)
+
+
+tt -i 1002 -p
+#    再重新调用3次
+tt -i 1002 -p --replay-interval 3
+#    再重新调用3次,并且间隔2S
+tt -i 1008 -p --replay-times 3 --replay-interval 2000
+
+
+
+项目中使用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
