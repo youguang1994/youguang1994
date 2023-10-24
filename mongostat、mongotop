@@ -1,0 +1,7 @@
+是什么？
+用于监控mongo的运行情况。
+
+怎么用？
+mongostat -h 10.206.0.5 --port=27019 -u root -p sBL2y7Uuxqyi --authenticationDatabase=admin 
+
+mongotop -h 10.206.0.5 --port=27019 -u root -p sBL2y7Uuxqyi --authenticationDatabase=admin 
