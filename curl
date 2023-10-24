@@ -1,0 +1,21 @@
+是什么？
+看到开发都是用这个命令来调接口，我也跟着用了
+的确很方便，有时候你要跟开发讲某个接口可能有问题的时候，总不能每次都截图吧，这样可信力也不高
+所以写 curl 调接口是最快的，直接让开发复制粘贴执行一遍，就知道接口的确有问题了
+
+
+curl 是常用的命令行工具，用来请求 Web 服务器
+它的名字就是客户端（client）的 URL 工具的意思
+它的功能非常强大，命令行参数多达几十种
+如果熟练的话，完全可以取代 Postman 接口测试工
+怎么用？
+请求网页地址：
+-v，是为了看请求的详细过程
+-A， 指定客户端的 User-Agent
+  curl -v -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" http://baidu.com
+
+-b    向服务器发送 Cookie，可以是 data 也可以是一个文件
+curl -v -b 'foo=bar' http://baidu.com
+
+-d（常用）用于发送 POST 请求的数据体
+curl -v  -d 'wd=biying' -d 'ie=UTF-8'  https://www.baidu.com/s
