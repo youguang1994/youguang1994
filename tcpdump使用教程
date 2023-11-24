@@ -19,11 +19,6 @@ tcpdump tcp dst port 3306
 tcpdump tcp dst portrange 3306-3308
 
 
-
-
-
-
-
 # 过滤ip协议（proto）----目的（dir）----ip（type-host）----为192.168.220.128（value）且
 # tcp协议（proto）----目的（dir）----端口（type-port）----为3306（value）的数据包
 tcpdump ip dst host 192.168.220.128 and tcp dst port 3306
